@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "782187595631",
+    "project_id": "crm-relato",
+    "storage_bucket": "crm-relato.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782187595631:android:9dbcd8e84ddedd27400a9a",
+        "android_client_info": {
+          "package_name": "com.jsborbon.relato"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpp8SBXHmqVliteJbUUWNUGDyjOqYA79s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
