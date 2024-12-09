@@ -27,17 +27,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jsborbon.relato.models.CalendarEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun CalendarView(navHostController: NavHostController) {
+fun CalendarView(navController: NavController) {
+    var selectedIndex = 1
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {}) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        },
+        bottomBar = {
+            NavigationBottomBar(selectedIndex = selectedIndex, navController = navController)
+        }
+    ) { innerPadding ->
+        CalendarViewContent(innerPadding)
+    }
+}
+
+@Composable
+fun CalendarViewContent(innerPadding: PaddingValues) {
     val selectedDate by remember { mutableStateOf(Date()) }
     var currentMonthOffset by remember { mutableIntStateOf(0) }
     var showNewEventDialog by remember { mutableStateOf(false) }
@@ -63,6 +81,7 @@ fun CalendarView(navHostController: NavHostController) {
         add(Calendar.MONTH, currentMonthOffset)
     }.time
 
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { showNewEventDialog = true }) {
@@ -70,8 +89,7 @@ fun CalendarView(navHostController: NavHostController) {
             }
         }
     ) {
-        Column(Modifier.fillMaxSize().padding(it)) {
-            // Header
+        Column(Modifier.fillMaxSize().padding(it).padding(innerPadding)) {
             Row(
                 Modifier.fillMaxWidth().padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -152,7 +170,6 @@ fun CalendarView(navHostController: NavHostController) {
 }
 
 // Models and helpers
-data class CalendarEvent(val date: Date = Date(), val title: String = "", val createdBy: String = "")
 
 data class Day(val date: Date?, val dayOfMonth: Int, val isToday: Boolean, val isSelected: Boolean)
 
@@ -239,7 +256,7 @@ fun NewEventDialog(
 ) {
     var title by remember { mutableStateOf("") }
     var createdBy by remember { mutableStateOf("") }
-    val selectedDate by remember { mutableStateOf(Date()) }
+    val date by remember { mutableStateOf(Date()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -266,7 +283,7 @@ fun NewEventDialog(
 
                 Text("Event Date")
                 Button(onClick = { /* Add date picker logic */ }) {
-                    Text("Select Date: ${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate)}")
+                    Text("Select Date: ${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)}")
                 }
             }
         },
@@ -274,7 +291,8 @@ fun NewEventDialog(
             Button(
                 onClick = {
                     if (title.isNotEmpty() && createdBy.isNotEmpty()) {
-                        val newEvent = CalendarEvent(selectedDate, title, createdBy)
+                        val id = UUID.randomUUID()
+                        val newEvent = CalendarEvent(id,date, title, createdBy)
                         onEventAdded(newEvent)
                     }
                 }
@@ -289,10 +307,3 @@ fun NewEventDialog(
         }
     )
 }
-
-@Preview
-@Composable
-fun CalendarViewPreview() {
-    CalendarView(navHostController = rememberNavController())
-}
-

@@ -1,29 +1,28 @@
 package com.jsborbon.relato
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-
+// Data class representing a communication item
 data class CommunicationClass(
     val subject: String,
     val communicationBody: String,
@@ -32,52 +31,94 @@ data class CommunicationClass(
     val future: Boolean
 )
 
-// Main communications screen
 @Composable
-fun CommunicationsView(navHostController: NavHostController) {
+fun CommunicationsView(navController: NavController) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {}) {
+                Icon(Icons.Default.Add, contentDescription = "Add Communication")
+            }
+        },
+        bottomBar = {
+            NavigationBottomBar(selectedIndex = 3, navController = navController)
+        }
+    ) { innerPadding ->
+        CommunicationsViewContent(innerPadding, navController)
+    }
+}
+
+@Composable
+fun CommunicationsViewContent(innerPadding: PaddingValues, navController: NavController) {
     var searchText by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var showNewCommunicationDialog by remember { mutableStateOf(false) }
 
-    val availableCategories = listOf(
-        "All", "Announcements", "Ticketing", "Reminders", "Products"
-    )
+    val availableCategories = listOf("All", "Announcements", "Ticketing", "Reminders", "Products")
 
-    var communications by remember { mutableStateOf(listOf(
-        CommunicationClass("Q4 Keynote Reminder", "JSDJASJ", "Investors Newsletter", "Reminders", false),
-        CommunicationClass("Product Tips", "JASJASJJS", "Tips Newsletter", "Products", false),
-        CommunicationClass("Weekly Update", "JSJAJSJAS", "Weekly Digest", "Announcements", false),
-        CommunicationClass("Project Deadline", "JSJSJJS", "Reminders & Deadlines", "Ticketing", false)
-    )) }
+    var communications by remember {
+        mutableStateOf(
+            listOf(
+                CommunicationClass(
+                    "Q4 Keynote Reminder",
+                    "Details about the upcoming keynote.",
+                    "Investors Newsletter",
+                    "Reminders",
+                    false
+                ),
+                CommunicationClass(
+                    "Product Tips",
+                    "Learn how to use our new features.",
+                    "Tips Newsletter",
+                    "Products",
+                    false
+                ),
+                CommunicationClass(
+                    "Weekly Update",
+                    "Updates from this week.",
+                    "Weekly Digest",
+                    "Announcements",
+                    false
+                ),
+                CommunicationClass(
+                    "Project Deadline",
+                    "Reminder about the upcoming deadline.",
+                    "Reminders & Deadlines",
+                    "Ticketing",
+                    false
+                )
+            )
+        )
+    }
 
     val filteredCommunications = communications.filter { communication ->
         (selectedCategory == null || selectedCategory == "All" || communication.campaign == selectedCategory) &&
-                (searchText.isEmpty() || communication.subject.contains(searchText, true) ||
-                        communication.sendingGroup.contains(searchText, true))
+                (searchText.isEmpty() || communication.subject.contains(searchText, ignoreCase = true) ||
+                        communication.sendingGroup.contains(searchText, ignoreCase = true))
     }
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Column(Modifier.padding(16.dp)) {
-            Text("Welcome to", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text("Communications", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text("Manolo Ruíz", fontSize = 20.sp)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
+    ) {
+        HeaderSection()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Search bar
+        // Search Bar
         OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
             label = { Text("Search communications...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Categories scroll
+        // Categories Section
         Row(
             Modifier
                 .horizontalScroll(rememberScrollState())
@@ -86,43 +127,78 @@ fun CommunicationsView(navHostController: NavHostController) {
             availableCategories.forEach { category ->
                 Text(
                     text = category,
-                    color = if (category == selectedCategory) Color.Blue else Color.Black,
+                    color = if (category == selectedCategory) MaterialTheme.colorScheme.primary else Color.Black,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clickable { selectedCategory = category }
-                        .background(MaterialTheme.colorScheme.primary)
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    fontWeight = if (category == selectedCategory) FontWeight.Bold else FontWeight.Normal
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Communications list
-        Column(modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
+        // Communications List
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)
+        ) {
             filteredCommunications.forEach { communication ->
                 CommunicationRow(communication)
-                HorizontalDivider()
-
+                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             }
         }
 
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-            FloatingActionButton(onClick = { showNewCommunicationDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "New Communication")
-            }
+        // Floating Action Button
+        if (showNewCommunicationDialog) {
+            // Show dialog (implement dialog logic here if necessary)
         }
     }
 }
 
 @Composable
+fun HeaderSection() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = "Welcome to",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Communications",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Manolo Ruíz",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Image(
+            painter = painterResource(id = R.drawable.baseline_markunread_mailbox_24),
+            contentDescription = null,
+            modifier = Modifier
+                .size(70.dp)
+                .padding(10.dp),
+            contentScale = ContentScale.Fit
+        )
+    }
+}
+
+@Composable
 fun CommunicationRow(communication: CommunicationClass) {
-    Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_person),
             contentDescription = null,
@@ -135,11 +211,4 @@ fun CommunicationRow(communication: CommunicationClass) {
         }
         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
     }
-}
-
-
-@Preview
-@Composable
-fun CommunicationsViewPreview() {
-    CommunicationsView(navHostController = rememberNavController())
 }

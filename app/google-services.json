@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "782187595631",
+    "firebase_url": "https://crm-relato-default-rtdb.firebaseio.com",
     "project_id": "crm-relato",
     "storage_bucket": "crm-relato.firebasestorage.app"
   },

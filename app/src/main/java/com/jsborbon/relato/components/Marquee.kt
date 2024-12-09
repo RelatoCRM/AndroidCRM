@@ -1,8 +1,5 @@
 package com.jsborbon.relato.components
 
-import androidx.compose.ui.tooling.preview.Preview
-
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset

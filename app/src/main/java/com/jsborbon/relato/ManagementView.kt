@@ -8,6 +8,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,13 +22,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jsborbon.relato.ui.theme.*
 
 @Composable
 fun ManagementView(navController: NavController) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {}) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        },
+        bottomBar = {
+            NavigationBottomBar(selectedIndex = 2, navController = navController)
+        }
+    ) { innerPadding ->
+        ManagementViewContent(innerPadding, navController)
+    }
+
+}
+
+@Composable
+fun ManagementViewContent(innerPadding: PaddingValues, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(innerPadding)
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
@@ -102,7 +122,6 @@ fun ManagementView(navController: NavController) {
             )
         }
 
-        // Leads com.jsborbon.relato.Section
         Section(title = "Leads & Customer Insights") {
             ManagementTile(
                 title = "Recent Leads",
@@ -124,7 +143,6 @@ fun ManagementView(navController: NavController) {
             )
         }
 
-        // Automations com.jsborbon.relato.Section
         Section(title = "Automations & Notifications") {
             ManagementTile(
                 title = "All Automations",
@@ -196,13 +214,22 @@ fun KPIView(title: String, value: String) {
         modifier = Modifier
             .width(150.dp)
             .height(100.dp)
-            .background(Color.White, shape = RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.inverseSurface, shape = RoundedCornerShape(10.dp))
             .padding(8.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.secondary
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = value, style = MaterialTheme.typography.headlineSmall, color = OliveGreen)
+        Text(
+            text = value,
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
@@ -217,17 +244,17 @@ fun ManagementTile(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(SoftWhite, shape = RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp))
             .clickable { navController.navigate(destination) }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         Icon(
-          //  painter = painterResource(id = icon),
-            painter = painterResource(id = R.drawable.baseline_markunread_mailbox_24),
+            painter = painterResource(id = R.drawable.ic_campaign),
             contentDescription = null,
             modifier = Modifier.size(40.dp),
-            tint = OliveGreen
+            tint = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(

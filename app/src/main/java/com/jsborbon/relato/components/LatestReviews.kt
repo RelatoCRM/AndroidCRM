@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.math.log
 
 data class Review(
     val reviewer: String = "",
@@ -29,8 +30,12 @@ data class Review(
 
 @Composable
 fun LatestReviews() {
+
+    val db = FirebaseDatabase.getInstance()
+    val coleccion = "reviews"
+    val database = db.getReference(coleccion)
     val reviews = remember { mutableStateListOf<Review>() }
-    val database = FirebaseDatabase.getInstance().reference.child("reviews")
+
 
     LaunchedEffect(Unit) {
         database.addValueEventListener(object : ValueEventListener {
