@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.jsborbon.relato.components.LatestReviews
+import com.jsborbon.relato.components.PopoverMenu
 
 @Composable
 fun HomeView(navController: NavHostController) {
@@ -83,14 +84,8 @@ fun HomeViewContent(innerPadding: PaddingValues) {
             )
         }
 
-            Image(
-                painter = painterResource(id = R.drawable.companyicon),
-                contentDescription = "Relato Logo",
-                modifier = Modifier
-                    .size(70.dp)
-                    .padding(10.dp),
-                contentScale = ContentScale.Fit
-            )
+
+            PopoverMenu()
         }
 
         ChartView()

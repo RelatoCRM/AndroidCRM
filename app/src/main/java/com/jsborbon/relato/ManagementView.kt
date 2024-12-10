@@ -214,7 +214,7 @@ fun KPIView(title: String, value: String) {
         modifier = Modifier
             .width(150.dp)
             .height(100.dp)
-            .background(MaterialTheme.colorScheme.inverseSurface, shape = RoundedCornerShape(10.dp))
+            .background(Color.White, shape = RoundedCornerShape(10.dp))
             .padding(8.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -244,7 +244,7 @@ fun ManagementTile(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp))
+            .background(Color.White, shape = RoundedCornerShape(10.dp))
             .clickable { navController.navigate(destination) }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

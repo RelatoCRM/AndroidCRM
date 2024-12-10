@@ -19,14 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlin.math.log
-
-data class Review(
-    val reviewer: String = "",
-    val title: String = "",
-    val reviewBody: String = "",
-    val starsGiven: Int = 0
-)
+import com.jsborbon.relato.models.Review
 
 @Composable
 fun LatestReviews() {

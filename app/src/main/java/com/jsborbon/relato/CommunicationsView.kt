@@ -21,15 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jsborbon.relato.models.Communication
+import java.util.UUID
 
-// Data class representing a communication item
-data class CommunicationClass(
-    val subject: String,
-    val communicationBody: String,
-    val sendingGroup: String,
-    val campaign: String,
-    val future: Boolean
-)
 
 @Composable
 fun CommunicationsView(navController: NavController) {
@@ -59,28 +53,32 @@ fun CommunicationsViewContent(innerPadding: PaddingValues, navController: NavCon
     var communications by remember {
         mutableStateOf(
             listOf(
-                CommunicationClass(
+                Communication(
+                    UUID.randomUUID(),
                     "Q4 Keynote Reminder",
                     "Details about the upcoming keynote.",
                     "Investors Newsletter",
                     "Reminders",
                     false
                 ),
-                CommunicationClass(
+                Communication(
+                    UUID.randomUUID(),
                     "Product Tips",
                     "Learn how to use our new features.",
                     "Tips Newsletter",
                     "Products",
                     false
                 ),
-                CommunicationClass(
+                Communication(
+                    UUID.randomUUID(),
                     "Weekly Update",
                     "Updates from this week.",
                     "Weekly Digest",
                     "Announcements",
                     false
                 ),
-                CommunicationClass(
+                Communication(
+                    UUID.randomUUID(),
                     "Project Deadline",
                     "Reminder about the upcoming deadline.",
                     "Reminders & Deadlines",
@@ -192,7 +190,7 @@ fun HeaderSection() {
 }
 
 @Composable
-fun CommunicationRow(communication: CommunicationClass) {
+fun CommunicationRow(communication: Communication) {
     Row(
         Modifier
             .fillMaxWidth()
